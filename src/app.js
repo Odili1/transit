@@ -38,6 +38,10 @@ io.on('connection', (socket) => {
         orderingApp.rejectOrder(data)
     })
 
+    socket.on('finishRide', (data) => {
+        orderingApp.finishRide(data)
+    })
+
     // When socket is disconnected
     socket.on('disconnect', (message) => {
         console.log(`\nSocket ${socket.id} disconnected due to ${message}`);

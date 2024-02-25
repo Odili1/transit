@@ -13,6 +13,11 @@ class Driver{
     rejectOrder(order){
         console.log(`${this.name} rejects order ${order.id}`);
     }
+
+    inRide(){
+        this.in_ride ? this.in_ride = false : this.in_ride = true
+        console.log(`in_ride ${this.in_ride}`);
+    }
 }
 
 module.exports = Driver

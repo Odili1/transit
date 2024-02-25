@@ -49,6 +49,7 @@ class OrderingApp {
                 this.assignSocket({socket, user: driver})
                 this.sendEvent({socket, eventname: 'driverCreated', data: {driver}})
                 console.log(`DriverCreated: ${JSON.stringify(driver)}`);
+                console.log(`Drivers: ${JSON.stringify(this.drivers)}`);
                 return driver
 
             case 'sender':
@@ -83,13 +84,13 @@ class OrderingApp {
                 for (const driver of this.drivers){
                     if (driver.in_ride) continue
                     // Send event to remove notification from the driver
-                    this.sendEvent({socket: this.socketUserMap.get(driver.id), eventname: 'orderExpired', data: {order}})
+                    this.sendEvent({socket: this.socketUserMap.get(driver.id), eventname: 'driverNotFound', data: {order}})
 
                 }
 
                 // Send event to notify the sender that no driver was found
                 console.log(this.socketUserMap.keys());
-                this.sendEvent({socket: this.socketUserMap.get(sender.id), eventname: 'orderExpired', data: {order}})
+                this.sendEvent({socket: this.socketUserMap.get(sender.id), eventname: 'driverNotFound', data: {order}})
             }
         }, (1000 * 30))
         console.log(`Order Requested: ${JSON.stringify(order)}`);
@@ -103,6 +104,7 @@ class OrderingApp {
         const sender = this.senders.find(sender => sender.id === order.sender.id)
 
         order.assignDriver(driver)
+        driver.inRide()
         // feedback event to the sender who requested
         this.sendEvent({socket: this.socketUserMap.get(sender.id), eventname: 'orderAccepted', data: {order}})
 
@@ -126,6 +128,21 @@ class OrderingApp {
         console.log('Order rejected');
         // Feedback event  to the driver who accepted
         this.sendEvent({socket: this.socketUserMap.get(driverId), eventname: 'orderRejected', data: {order}})
+    }
+
+    finishRide(data){
+        const {id, driverId} = data;
+        const driver = this.drivers.find(driver => driver.id === driverId)
+        const order = this.orders.find(order => order.id === id)
+        const sender = this.senders.find(sender => sender.id === order.sender.id)
+
+        driver.inRide()
+
+        // Send Event to the sender
+        this.sendEvent({socket: this.socketUserMap.get(sender.id), eventname: 'finishRide', data: {order}})
+
+        // Send Event to the driver
+        this.sendEvent({socket: this.socketUserMap.get(driverId), eventname: 'finishRide', data: {order}})
     }
 }
 

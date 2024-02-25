@@ -31,20 +31,22 @@
 </body>
 <script src="https://cdn.socket.io/4.7.4/socket.io.min.js"></script>
 <script>
-    const names = ['Roberta Williams', 'Steve Wozniak', 'Paul Allen', 'Greenblatt']
+    const names = ['Ken Williams', 'Steve Jobs', 'Bill Gates', 'Larry Page']
     const senderName = names[Math.floor(Math.random() * 4)]
     console.log(`user name: ${senderName}`);
+    const idKey = `${senderName.split(' ')[0]}${Math.floor(Math.random() * 1000)}`
+
     const socket = io('http://localhost:8000', {
         query: {
             name: senderName,
             user_type: 'sender',
-            id: localStorage.getItem(`${this.name.split(' ')[0]}`)
+            id: localStorage.getItem(idKey)
         }
     })
     
     socket.on('senderCreated', (data) => {
         console.log(`${data.sender.name} ==> ${data.sender.id}`);
-        localStorage.setItem(`${data.sender.name.split(' ')[0]}`, data.sender.id)
+        localStorage.setItem(idKey, data.sender.id)
     })
 
     const requestForm = document.getElementById('request-form')
@@ -61,19 +63,25 @@
         requestOrderButton.classList.add('disabled')
 
         console.log('submit clicked');
-        socket.emit('requestOrder', {current_location: location, destination, price, id: localStorage.getItem(`${senderName.split(' ')[0]}`)})
+        socket.emit('requestOrder', {current_location: location, destination, price, id: localStorage.getItem(idKey)})
     })
 
     socket.on('orderAccepted', (data) => {
         const notificationContainer = document.getElementById('notification-container')
 
         const div = document.createElement('div')
+        div.classList.add('mb-3')
+
+        const date = new Date().toLocaleTimeString()
 
         div.innerHTML = `
             <div styles="margin: 10px;" class="card">
                 <h5 class="card-header"> Order Request </h5>
                 <div class="card-body">
-                    <h5 class="card-title">${data.order.driver.name} has Accepted your ride</h5>
+                    <div class="d-flex justify-content-between">
+                        <h5 class="card-title">Driver ${data.order.driver.name} has Accepted your ride</h5>
+                        <p>${date.slice(0, 4)} ${date.slice(-2)}</p>
+                    </div>
                     <p class="card-text">Current Location: ${data.order.current_location}</p>
                     <p class="card-text">Destination: ${data.order.destination}</p>
                     <p class="card-text">Price: ${data.order.price}</p>
@@ -89,12 +97,18 @@
         const notificationContainer = document.getElementById('notification-container')
 
         const div = document.createElement('div')
+        div.classList.add('mb-3')
+
+        const date = new Date().toLocaleTimeString()
 
         div.innerHTML = `
             <div styles="margin: 10px;" class="card">
                 <h5 class="card-header"> Order Request </h5>
                 <div class="card-body">
-                    <h5 class="card-title">${data.order.driver.name} has rejected your ride</h5>
+                    <div class="d-flex justify-content-between">
+                        <h5 class="card-title">Driver ${data.order.driver.name} has rejected your ride</h5>
+                        <p>${date.slice(0, 4)} ${date.slice(-2)}</p>
+                    </div>
                     <p class="card-text">Current Location: ${data.order.current_location}</p>
                     <p class="card-text">Destination: ${data.order.destination}</p>
                     <p class="card-text">Price: ${data.order.price}</p>
@@ -105,16 +119,22 @@
 
     })
 
-    socket.on('orderExpired', (data) => {
+    socket.on('driverNotFound', (data) => {
         const notificationContainer = document.getElementById('notification-container')
 
         const div = document.createElement('div')
+        div.classList.add('mb-3')
+
+        const date = new Date().toLocaleTimeString()
 
         div.innerHTML = `
             <div styles="margin: 10px;" class="card">
                 <h5 class="card-header"> Order Request </h5>
                 <div class="card-body">
-                    <h5 class="card-title">Your order has timedout. <i>No driver found<i></h5>
+                    <div class="d-flex justify-content-between">
+                        <h5 class="card-title">Your order has timedout. <i>No driver found<i></h5>
+                        <p>${date.slice(0, 4)} ${date.slice(-2)}</p>
+                    </div>
                     <p class="card-text">Current Location: ${data.order.current_location}</p>
                     <p class="card-text">Destination: ${data.order.destination}</p>
                     <p class="card-text">Price: ${data.order.price}</p>
@@ -127,6 +147,31 @@
 
         requestOrderButton.innerHTML = 'request'
         requestOrderButton.classList.remove('disabled')
+    })
+
+    socket.on('finishRide', (data) => {
+        const notificationContainer = document.getElementById('notification-container')
+
+        const div = document.createElement('div')
+        div.classList.add('mb-3')
+
+        const date = new Date().toLocaleTimeString()
+
+        div.innerHTML = `
+            <div styles="margin: 10px;" class="card">
+                <h5 class="card-header"> Order Request </h5>
+                <div class="card-body">    
+                    <div class="d-flex justify-content-between">
+                        <h5 class="card-title">Ride session Ended. <i>Hope you had a nice ride</i></h5>
+                        <p>${date.slice(0, 4)} ${date.slice(-2)}</p>
+                    </div>
+                    <p class="card-text">Current Location: ${data.order.current_location}</p>
+                    <p class="card-text">Destination: ${data.order.destination}</p>
+                    <p class="card-text">Price: ${data.order.price}</p>
+                </div>
+            </div>
+        `
+        notificationContainer.appendChild(div)
     })
 </script>
 </html>
