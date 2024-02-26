@@ -128,14 +128,14 @@
     socket.on('driverNotFound', (data) => {
         const notificationContainer = document.getElementById('notification-container')
 
-        // console.log(`Expired: ${JSON.stringify(notificationContainer)}`);
-        console.log(notificationContainer.firstElementChild.children);
+        console.log(notificationContainer.firstElementChild.children[0].children[0].textContent);
         console.log(notificationContainer.children);
         const notificationChildren = notificationContainer.children
-
         for (const child of notificationChildren) {
+            console.log(child.children[0].id, `${data.order.id}`);
             if (data.order.status === 'pending' && child.children[0].id === `${data.order.id}`){
-                child.classList.add('d-none')
+                console.log(child);
+                child.style.display = 'none'
             }
         }
 
@@ -181,6 +181,34 @@
 
         if (finishButton){
             finishButton.style.display = 'none'
+        }
+    })
+
+    // If another driver has accepted
+    socket.on('didNotAccept', (data) => {
+        
+        const acceptOrderButton = document.getElementById(`${data.order.id}-accept-order`)
+        const rejectOrderButton = document.getElementById(`${data.order.id}-reject-order`)
+
+
+        // Add "Order already accepted by another driver"
+        const notificationContainer = document.getElementById('notification-container')
+
+        const notificationChildren = notificationContainer.children
+
+        for (const child of notificationChildren) {
+            if (child.children[0].id === `${data.order.id}`){
+                acceptOrderButton.parentElement.children[0].children[0].textContent = `${data.order.sender.name}: This order has already been accepted by another driver`
+            }
+        }
+
+        // Remove the Buttons from display
+        if (acceptOrderButton){
+            acceptOrderButton.style.display = 'none'
+        }
+
+        if (rejectOrderButton){
+            rejectOrderButton.style.display = 'none'
         }
     })
 </script>

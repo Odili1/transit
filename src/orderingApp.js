@@ -82,7 +82,7 @@ class OrderingApp {
         setTimeout(()=> {
             if (order.status == 'pending'){
                 for (const driver of this.drivers){
-                    if (driver.in_ride) continue
+                    
                     // Send event to remove notification from the driver
                     this.sendEvent({socket: this.socketUserMap.get(driver.id), eventname: 'driverNotFound', data: {order}})
 
@@ -111,6 +111,9 @@ class OrderingApp {
         // Feedback event  to the driver who accepted
         console.log(`driverId: ${driverId}`);
         this.sendEvent({socket: this.socketUserMap.get(driverId), eventname: 'orderAccepted', data: {order}})
+
+        // Broadcasting to order drivers that didn't accept an order
+        this.socketUserMap.get(driverId).broadcast.emit('didNotAccept', {order})
     }
 
     rejectOrder(data){
