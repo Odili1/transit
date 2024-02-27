@@ -80,7 +80,7 @@
                 <div class="card-body">
                     <div class="d-flex justify-content-between">
                         <h5 class="card-title">Driver ${data.order.driver.name} has Accepted your ride</h5>
-                        <p>${date.slice(0, 4)} ${date.slice(-2)}</p>
+                        <p>${date[1] == ':' ? date.slice(0, 4) : date.slice(0, 5)} ${date.slice(-2)}</p>
                     </div>
                     <p class="card-text">Current Location: ${data.order.current_location}</p>
                     <p class="card-text">Destination: ${data.order.destination}</p>
@@ -107,7 +107,7 @@
                 <div class="card-body">
                     <div class="d-flex justify-content-between">
                         <h5 class="card-title">Driver ${data.order.driver.name} has rejected your ride</h5>
-                        <p>${date.slice(0, 4)} ${date.slice(-2)}</p>
+                        <p>${date[1] == ':' ? date.slice(0, 4) : date.slice(0, 5)} ${date.slice(-2)}</p>
                     </div>
                     <p class="card-text">Current Location: ${data.order.current_location}</p>
                     <p class="card-text">Destination: ${data.order.destination}</p>
@@ -133,7 +133,7 @@
                 <div class="card-body">
                     <div class="d-flex justify-content-between">
                         <h5 class="card-title">Your order has timedout. <i>No driver found<i></h5>
-                        <p>${date.slice(0, 4)} ${date.slice(-2)}</p>
+                        <p>${date[1] == ':' ? date.slice(0, 4) : date.slice(0, 5)} ${date.slice(-2)}</p>
                     </div>
                     <p class="card-text">Current Location: ${data.order.current_location}</p>
                     <p class="card-text">Destination: ${data.order.destination}</p>
@@ -163,7 +163,7 @@
                 <div class="card-body">    
                     <div class="d-flex justify-content-between">
                         <h5 class="card-title">Ride session Ended. <i>Hope you had a nice ride</i></h5>
-                        <p>${date.slice(0, 4)} ${date.slice(-2)}</p>
+                        <p>${date[1] == ':' ? date.slice(0, 4) : date.slice(0, 5)} ${date.slice(-2)}</p>
                     </div>
                     <p class="card-text">Current Location: ${data.order.current_location}</p>
                     <p class="card-text">Destination: ${data.order.destination}</p>

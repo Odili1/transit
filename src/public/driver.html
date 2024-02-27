@@ -50,7 +50,7 @@
                 <div class="card-body ${data.order.sender.name.split(' ')[0]}">
                     <div class="d-flex justify-content-between">
                         <h5 class="card-title">${data.order.sender.name} is requesting a ride</h5>
-                        <p>${date.slice(0, 4)} ${date.slice(-2)}</p>
+                        <p>${date[1] == ':' ? date.slice(0, 4) : date.slice(0, 5)} ${date.slice(-2)}</p>
                     </div>
                     <p class="card-text">Current Location: ${data.order.current_location}</p>
                     <p class="card-text">Destination: ${data.order.destination}</p>
@@ -159,7 +159,7 @@
                 <div class="card-body ${data.order.sender.name.split(' ')[0]}">
                     <div class="d-flex justify-content-between">
                         <h5 class="card-title">${data.order.sender.name}: Ride Session Completed</h5>
-                        <p>${date.slice(0, 4)} ${date.slice(-2)}</p>
+                        <p>${date[1] == ':' ? date.slice(0, 4) : date.slice(0, 5)} ${date.slice(-2)}</p>
                     </div>
                     <p class="card-text">Current Location: ${data.order.current_location}</p>
                     <p class="card-text">Destination: ${data.order.destination}</p>
