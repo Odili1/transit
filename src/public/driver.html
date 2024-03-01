@@ -21,7 +21,7 @@
     console.log(`user name: ${driverName}`);
     const idKey = `${driverName.split(' ')[0]}${Math.floor(Math.random() * 1000)}`
 
-    const socket = io('http://localhost:8000', {
+    const socket = io('https://transit-dq94.onrender.com', {
         query: {
             name: driverName,
             user_type: 'driver',
