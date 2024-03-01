@@ -30,13 +30,14 @@
     </div>
 </body>
 <script src="https://cdn.socket.io/4.7.4/socket.io.min.js"></script>
+<script src="/socket.io/socket.io.js"></script>
 <script>
     const names = ['Ken Williams', 'Steve Jobs', 'Bill Gates', 'Larry Page']
     const senderName = names[Math.floor(Math.random() * 4)]
     console.log(`user name: ${senderName}`);
     const idKey = `${senderName.split(' ')[0]}${Math.floor(Math.random() * 1000)}`
 
-    const socket = io('http://localhost:8000', {
+    const socket = io('https://transit-dq94.onrender.com',{
         query: {
             name: senderName,
             user_type: 'sender',
